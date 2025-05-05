@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Question 2</title>
+</head>
+<body>
+<h1>Question 2</h1>
+<label for="aInput">First number:</label>
+<input id="aInput" type="number" min="1">
+<br>
+<label for="bInput">Second number:</label>
+<input id="bInput" type="number" min="1">
+<br>
+<button id="checkBtn">Check</button>
+<div id="result" style="margin-top:10px;"></div>
+
+<script>
+  function sumProperDivisors(n) {
+    let sum = 1;
+    let limit = Math.floor(Math.sqrt(n));
+    for (let d = 2; d <= limit; d++) {
+      if (n % d === 0) {
+        sum += d;
+        let other = n / d;
+        if (other !== d) sum += other;
+      }
+    }
+    return n > 1 ? sum : 0;
+  }
+
+  function areFriendly(a, b) {
+    return sumProperDivisors(a) === b && sumProperDivisors(b) === a;
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', function() {
+    let a = parseInt(document.getElementById('aInput').value, 10);
+    let b = parseInt(document.getElementById('bInput').value, 10);
+    if (!Number.isInteger(a) || a < 1 || !Number.isInteger(b) || b < 1) {
+      alert("Please enter two positive integers.");
+      return;
+    }
+    document.getElementById('result').textContent = areFriendly(a, b);
+  });
+</script>
+</body>
+</html>

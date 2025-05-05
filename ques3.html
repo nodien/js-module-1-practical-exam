@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ques3</title>
+</head>
+<body>
+<h1>Quản lí sách</h1>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <thead>
+  <tr>
+    <th>Mã số sách</th>
+    <th>Tên sách</th>
+    <th>Năm xuất bản</th>
+    <th>Số quyển</th>
+    <th>Tình trạng</th>
+  </tr>
+  </thead>
+  <tbody id="bookTable"></tbody>
+</table>
+
+<div style="margin-top:10px;">
+  <button id="addExistingBtn">Thêm sách đã có</button>
+  <button id="addNewBtn">Thêm sách mới</button>
+  <button id="borrowBtn">Mượn sách</button>
+  <button id="showMaxBtn">Hiển thị sách nhiều nhất</button>
+</div>
+
+<div id="message" style="margin-top:10px; white-space: pre-line;"></div>
+
+<script>
+  const books = [
+    // { code: '12345', title: 'Toán', year: 2000, copies: 3, status: true },
+    // { code: '23456', title: 'Văn', year: 1998, copies: 4, status: true },
+    // { code: '37456', title: 'Tiếng Anh', year: 1999, copies: 5, status: true }
+  ];
+
+  function validCode(c) {
+    return /^[1-5][0-9]{4}$/.test(c);
+  }
+
+  function render() {
+    const t = document.getElementById('bookTable');
+    t.innerHTML = '';
+    books.forEach(b => {
+      const tr = document.createElement('tr');
+      [b.code, b.title, b.year, b.copies, b.status].forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      t.appendChild(tr);
+    });
+  }
+
+  document.getElementById('addExistingBtn').addEventListener('click', () => {
+    let code, book;
+    while (true) {
+      code = prompt('Nhập mã sách đã có:');
+      if (code === null) return;
+      book = books.find(x => x.code === code);
+      if (book) break;
+      alert('Không tìm thấy sách.');
+    }
+    let n;
+    while (true) {
+      const s = prompt('Số quyển thêm:');
+      if (s === null) return;
+      n = parseInt(s, 10);
+      if (Number.isInteger(n) && n > 0) break;
+      alert('Số không hợp lệ.');
+    }
+    book.copies += n;
+    book.status = book.copies > 0;
+    render();
+  });
+
+  document.getElementById('addNewBtn').addEventListener('click', () => {
+    let code;
+    while (true) {
+      code = prompt('Mã sách (5 ký tự, đầu 1–5):');
+      if (code === null) return;
+      if (validCode(code) && !books.some(x => x.code === code)) break;
+      alert('Mã không hợp lệ hoặc đã tồn tại.');
+    }
+    let title;
+    while (true) {
+      title = prompt('Tên sách:');
+      if (title === null) return;
+      if (title.trim() !== '') break;
+      alert('Tên không được bỏ trống.');
+    }
+    let year;
+    while (true) {
+      const y = prompt('Năm xuất bản (4 chữ số 1000–9999):');
+      if (y === null) return;
+      year = parseInt(y, 10);
+      if (Number.isInteger(year) && year >= 1000 && year <= 9999) break;
+      alert('Vui lòng nhập năm hợp lệ (1000–9999).');
+    }
+    let copies;
+    while (true) {
+      const c = prompt('Số quyển:');
+      if (c === null) return;
+      copies = parseInt(c, 10);
+      if (Number.isInteger(copies) && copies >= 0) break;
+      alert('Số quyển không hợp lệ.');
+    }
+    books.push({ code, title, year, copies, status: copies > 0 });
+    render();
+  });
+
+  document.getElementById('borrowBtn').addEventListener('click', () => {
+    let code, book;
+    while (true) {
+      code = prompt('Nhập mã sách muốn mượn:');
+      if (code === null) return;
+      book = books.find(x => x.code === code);
+      if (!book) {
+        alert('Không tìm thấy sách.');
+        continue;
+      }
+      if (book.copies < 1) {
+        alert('Không còn quyển để mượn.');
+        continue;
+      }
+      break;
+    }
+    book.copies--;
+    book.status = book.copies > 0;
+    render();
+  });
+
+  document.getElementById('showMaxBtn').addEventListener('click', () => {
+    if (books.length === 0) return;
+    const max = Math.max(...books.map(b => b.copies));
+    const list = books.filter(b => b.copies === max);
+    const msg = list.map(b =>
+            `${b.code} – ${b.title} (${b.copies} quyển)`
+    ).join('\n');
+    document.getElementById('message').textContent =
+            'Sách nhiều nhất:\n' + msg;
+  });
+
+  render();
+</script>
+</body>
+</html>

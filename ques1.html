@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question 1</title>
+</head>
+<body>
+<h1>Question 1</h1>
+<button onclick="run()">Enter Array</button>
+<div id="output"></div>
+
+<script>
+    function run() {
+        let n;
+        do {
+            n = prompt("Enter the number of elements n (1 ≤ n ≤ 50):");
+            if (n === null) return; // Cancelled
+            n = Number(n);
+        } while (!Number.isInteger(n) || n < 1 || n > 50);
+
+        const arr = [];
+        for (let i = 0; i < n; i++) {
+            let num;
+            do {
+                num = prompt("Enter element #" + (i + 1) + " (integer):");
+                if (num === null) return;
+                num = Number(num);
+            } while (!Number.isInteger(num));
+            arr.push(num);
+        }
+
+        const out = document.getElementById("output");
+        out.innerHTML = "<p><strong>Array entered:</strong> [" + arr.join(", ") + "]</p>";
+
+        let sum = 0, count = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (i % 2 === 0 && arr[i] % 2 !== 0) {
+                sum += arr[i];
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            const avg = sum / count;
+            out.innerHTML += "<p><strong>Average of odd numbers at even positions:</strong> " + avg + "</p>";
+        } else {
+            out.innerHTML += "<p>No odd numbers found at even positions.</p>";
+        }
+    }
+</script>
+</body>
+</html>
